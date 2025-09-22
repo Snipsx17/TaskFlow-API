@@ -40,7 +40,7 @@ export class TasksController {
     return 'This will delete a task';
   }
 
-  @Patch(':id')
+  @Patch(':id/status')
   updateTaskStatus(@Param('id', ParseUuidV4Pipe) id: string) {
     return 'This will update a task status';
   }
