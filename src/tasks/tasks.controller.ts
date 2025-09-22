@@ -2,11 +2,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Put,
 } from '@nestjs/common';
+import { ParseUuidV4Pipe } from 'src/common/pipes/parse-uuidv4.pipe';
 
 @Controller('tasks')
 export class TasksController {
@@ -16,27 +19,29 @@ export class TasksController {
   }
 
   @Get(':id')
-  getTasksById(@Param('id') id: string) {
+  getTasksById(@Param('id', ParseUuidV4Pipe) id: string) {
     return 'This will return a task by ID';
   }
 
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   createTask() {
     return 'This will create a new task';
   }
 
   @Put(':id')
-  updateTask(@Param('id') id: string) {
+  updateTask(@Param('id', ParseUuidV4Pipe) id: string) {
     return 'This will update a task';
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  deleteTask(@Param('id') id: string) {
+  deleteTask(@Param('id', ParseUuidV4Pipe) id: string) {
     return 'This will delete a task';
   }
 
   @Patch(':id')
-  updateTaskStatus(@Param('id') id: string) {
+  updateTaskStatus(@Param('id', ParseUuidV4Pipe) id: string) {
     return 'This will update a task status';
   }
 }
