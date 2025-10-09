@@ -1,6 +1,7 @@
 import {
   IsDateString,
   IsEnum,
+  IsOptional,
   IsString,
   IsUUID,
   Length,
@@ -18,9 +19,11 @@ export class CreateTaskDto {
   readonly description: string;
 
   @IsEnum(TaskStatus)
+  @IsOptional()
   readonly status: TaskStatus;
 
   @IsEnum(TaskPriority)
+  @IsOptional()
   readonly priority: TaskPriority;
 
   @IsDateString()
