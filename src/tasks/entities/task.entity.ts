@@ -1,37 +1,70 @@
-import { Length, IsDate, IsUUID, IsString, IsEnum } from 'class-validator';
 import { TaskStatus } from '../enums/task-status.enum';
 import { TaskPriority } from '../enums/task-priority.enum';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+@Entity('task')
 export class TaskEntity {
-  @IsUUID('4')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @IsString()
-  @Length(3, 50)
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+    unique: true,
+  })
   title: string;
 
-  @IsString()
-  @Length(3, 255)
+  @Column({
+    type: 'text',
+    nullable: true,
+    default: null,
+  })
   description: string;
 
-  @IsEnum(TaskStatus)
-  status: TaskStatus;
+  @Column({
+    type: 'enum',
+    enum: TaskStatus,
+    default: TaskStatus.PENDING,
+    nullable: false,
+  })
+  status?: TaskStatus;
 
-  @IsEnum(TaskPriority)
-  priority: TaskPriority;
+  @Column({
+    type: 'enum',
+    enum: TaskPriority,
+    default: TaskPriority.LOW,
+    nullable: false,
+  })
+  priority?: TaskPriority;
 
-  @IsDate()
+  @Column({
+    type: 'date',
+    nullable: false,
+  })
   dueDate: Date;
 
-  @IsUUID('4')
+  @Column({
+    type: 'uuid',
+    nullable: false,
+  })
   userId: string;
 
-  @IsUUID('4')
+  @Column({
+    type: 'uuid',
+    nullable: false,
+  })
   categoryId: string;
 
-  @IsDate()
+  @CreateDateColumn()
   createdAt: Date;
 
-  @IsDate()
+  @UpdateDateColumn()
   updatedAt: Date;
 }
