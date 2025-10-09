@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dtos/create-task.dto';
@@ -12,6 +13,8 @@ import { EntityNotFoundError, Repository } from 'typeorm';
 
 @Injectable()
 export class TasksService {
+  private readonly logger = new Logger(TasksService.name);
+
   constructor(
     @InjectRepository(TaskEntity)
     private readonly taskRepository: Repository<TaskEntity>,
@@ -27,6 +30,7 @@ export class TasksService {
 
       return task;
     } catch (error) {
+      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -37,6 +41,7 @@ export class TasksService {
       await this.taskRepository.save(newTask);
       return newTask;
     } catch (error) {
+      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -47,6 +52,7 @@ export class TasksService {
       await this.taskRepository.update(taskId, updatedTaskDto);
       return this.taskRepository.findBy({ id: taskId });
     } catch (error) {
+      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -56,13 +62,13 @@ export class TasksService {
       await this.getTaskFromDB(taskId);
       return await this.taskRepository.delete(taskId);
     } catch (error) {
+      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
 
   async getTaskFromDB(taskId: string) {
     const task = await this.taskRepository.findOneByOrFail({ id: taskId });
-
     return task;
   }
 
