@@ -9,7 +9,6 @@ import { UpdateTaskDto } from './dtos/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskEntity } from './entities/task.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
-import { TaskStatus } from './enums/task-status.enum';
 
 @Injectable()
 export class TasksService {
@@ -56,19 +55,6 @@ export class TasksService {
     try {
       await this.getTaskFromDB(taskId);
       return await this.taskRepository.delete(taskId);
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
-  }
-
-  async updateStatus(taskId: string, newStatus: TaskStatus) {
-    try {
-      const task = await this.getTaskFromDB(taskId);
-
-      task[0].status = newStatus;
-      await this.taskRepository.save(task[0]);
-
-      return task;
     } catch (error) {
       this.handleDBExceptions(error);
     }
