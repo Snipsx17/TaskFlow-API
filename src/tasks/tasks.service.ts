@@ -22,13 +22,26 @@ export class TasksService {
   ) {}
 
   async getAll(pagination: PaginationDto) {
-    const { limit = 10, offset = 0 } = pagination;
+    const { limit = 10, offset = 0, order = 'ASC' } = pagination;
+    console.log(order);
 
     try {
-      return await this.taskRepository.find({
-        take: limit,
-        skip: offset,
-      });
+      // method 1 without query builder
+      // return await this.taskRepository.find({
+      //   take: limit,
+      //   skip: offset,
+      //   order: {
+      //     title: order as FindOptionsOrderValue,
+      //   },
+      // });
+
+      //method 2 with query builder
+      const query = this.taskRepository.createQueryBuilder();
+      return await query
+        .orderBy('title', order as 'ASC' | 'DESC')
+        .limit(limit)
+        .offset(offset)
+        .getMany();
     } catch (error) {
       this.handleDBExceptions(error);
     }
