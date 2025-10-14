@@ -8,19 +8,21 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ParseUuidV4Pipe } from 'src/common/pipes/parse-uuidv4.pipe';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { UpdateTaskDto } from './dtos/update-task.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  async getTasks() {
-    return await this.tasksService.getAll();
+  async getTasks(@Query() pagination: PaginationDto) {
+    return await this.tasksService.getAll(pagination);
   }
 
   @Get(':id')

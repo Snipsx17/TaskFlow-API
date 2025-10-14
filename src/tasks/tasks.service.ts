@@ -10,6 +10,7 @@ import { UpdateTaskDto } from './dtos/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskEntity } from './entities/task.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class TasksService {
@@ -20,8 +21,17 @@ export class TasksService {
     private readonly taskRepository: Repository<TaskEntity>,
   ) {}
 
-  async getAll() {
-    return await this.taskRepository.find();
+  async getAll(pagination: PaginationDto) {
+    const { limit = 10, offset = 0 } = pagination;
+
+    try {
+      return await this.taskRepository.find({
+        take: limit,
+        skip: offset,
+      });
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async getById(taskId: string) {
@@ -30,7 +40,6 @@ export class TasksService {
 
       return task;
     } catch (error) {
-      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -41,7 +50,6 @@ export class TasksService {
       await this.taskRepository.save(newTask);
       return newTask;
     } catch (error) {
-      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -52,7 +60,6 @@ export class TasksService {
       await this.taskRepository.update(taskId, updatedTaskDto);
       return this.taskRepository.findBy({ id: taskId });
     } catch (error) {
-      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -62,7 +69,6 @@ export class TasksService {
       await this.getTaskFromDB(taskId);
       return await this.taskRepository.delete(taskId);
     } catch (error) {
-      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -73,10 +79,20 @@ export class TasksService {
   }
 
   private handleDBExceptions(error: any): never {
-    if (error.code === '23505') throw new BadRequestException(error.detail);
+    if (error.code === '23505') {
+      this.logger.error(error);
+      throw new BadRequestException(error.detail);
+    }
 
-    if (error instanceof EntityNotFoundError)
+    if (error instanceof EntityNotFoundError) {
+      this.logger.error(error);
       throw new NotFoundException('Task not found');
+    }
+
+    if (error.code === 'ECONNREFUSED') {
+      this.logger.error((error.message = 'DB connection refused'));
+      throw new InternalServerErrorException();
+    }
 
     throw new InternalServerErrorException();
   }
