@@ -23,7 +23,6 @@ export class TasksService {
 
   async getAll(pagination: PaginationDto) {
     const { limit = 10, offset = 0, order = 'ASC' } = pagination;
-    console.log(order);
 
     try {
       // method 1 without query builder
