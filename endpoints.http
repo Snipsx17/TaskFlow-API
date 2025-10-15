@@ -1,20 +1,20 @@
 @base_url = http://localhost:3000
 
 ###
-GET {{base_url}}/tasks
+GET {{base_url}}/tasks?ordeR=Asc&limit=10
 
 ###
-GET {{base_url}}/tasks/3dacc4b8-2f5a-4902-ae96-0493cce4ae79
+GET {{base_url}}/tasks/c3c33a31-b26c-44aa-b9bd-549390d962cb
 
 ###
-DELETE {{base_url}}/tasks/6b4e9252-ad03-476e-92fa-0cf2ce9701c0
+DELETE {{base_url}}/tasks/c3c33a31-b26c-44aa-b9bd-549390d962cb
 
 ###
 POST {{base_url}}/tasks
 Content-Type: application/json
 
 {
-    "title": "run",
+    "title": "Actualizar dependencias",
     "description": "Run 30 minutes each day",
     "status": "pending",
     "priority": "high",
@@ -50,14 +50,10 @@ Content-Type: application/json
 }
 
 ###
-PUT {{base_url}}/tasks/9a753f9f-c340-4221-a99d-b8a5889a9eec
+PUT {{base_url}}/tasks/c3c33a31-b26c-44aa-b9bd-549390d962cb
 Content-Type: application/json
 
 {
-    "title": "eat healthier",
-    "description": "prepare healthier food all days",
-    "status": "pending",
-    "priority": "high",
-    "dueDate": "2025-10-15",
-    "categoryId": "cb23e478-fd3c-4032-a47b-d80d71ab8e27"
+
+    "dueDate": "2026-01-01"
 }
