@@ -1,6 +1,7 @@
 import {
   IsDateString,
   IsEnum,
+  IsOptional,
   IsString,
   IsUUID,
   Length,
@@ -11,21 +12,27 @@ import { TaskPriority } from '../enums/task-priority.enum';
 export class UpdateTaskDto {
   @IsString()
   @Length(3, 50)
-  readonly title: string;
+  @IsOptional()
+  readonly title?: string;
 
   @IsString()
   @Length(3, 255)
-  readonly description: string;
+  @IsOptional()
+  readonly description?: string;
 
   @IsEnum(TaskStatus)
-  readonly status: TaskStatus;
+  @IsOptional()
+  readonly status?: TaskStatus;
 
   @IsEnum(TaskPriority)
-  readonly priority: TaskPriority;
+  @IsOptional()
+  readonly priority?: TaskPriority;
 
   @IsDateString()
-  readonly dueDate: Date;
+  @IsOptional()
+  readonly dueDate?: Date;
 
   @IsUUID('4')
-  readonly categoryId: string;
+  @IsOptional()
+  readonly categoryId?: string;
 }

@@ -1,40 +1,115 @@
-import { Injectable } from '@nestjs/common';
-import { TasksRepository } from './repositories/tasks.repository';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dtos/create-task.dto';
-import { v4 as UUID } from 'uuid';
 import { UpdateTaskDto } from './dtos/update-task.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TaskEntity } from './entities/task.entity';
+import { EntityNotFoundError, Repository } from 'typeorm';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly tasksRepository: TasksRepository) {}
+  private readonly logger = new Logger(TasksService.name);
 
-  async getAll() {
-    return await this.tasksRepository.getAll();
+  constructor(
+    @InjectRepository(TaskEntity)
+    private readonly taskRepository: Repository<TaskEntity>,
+  ) {}
+
+  async getAll(pagination: PaginationDto) {
+    const { limit = 10, offset = 0, order = 'ASC' } = pagination;
+
+    try {
+      // method 1 without query builder
+      // return await this.taskRepository.find({
+      //   take: limit,
+      //   skip: offset,
+      //   order: {
+      //     title: order as FindOptionsOrderValue,
+      //   },
+      // });
+
+      //method 2 with query builder
+      const query = this.taskRepository.createQueryBuilder();
+      return await query
+        .orderBy('title', order as 'ASC' | 'DESC')
+        .limit(limit)
+        .offset(offset)
+        .getMany();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async getById(taskId: string) {
-    return await this.tasksRepository.getById(taskId);
+    try {
+      const task = await this.getTaskFromDB(taskId);
+
+      return task;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async create(createTaskDto: CreateTaskDto) {
-    const task = {
-      id: UUID(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...createTaskDto,
-    };
-    return await this.tasksRepository.create(task);
+    try {
+      const newTask = this.taskRepository.create(createTaskDto);
+      await this.taskRepository.save(newTask);
+      return newTask;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async update(taskId: string, updatedTaskDto: UpdateTaskDto) {
-    return await this.tasksRepository.update(taskId, updatedTaskDto);
+    try {
+      await this.getTaskFromDB(taskId);
+      await this.taskRepository.update(taskId, updatedTaskDto);
+      return this.taskRepository.findBy({ id: taskId });
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async delete(taskId: string) {
-    return await this.tasksRepository.delete(taskId);
+    try {
+      await this.getTaskFromDB(taskId);
+      return await this.taskRepository.delete(taskId);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
-  async updateStatus(taskId: string, newStatus: string) {
-    return await this.tasksRepository.updateStatus(taskId, newStatus);
+  async getTaskFromDB(taskId: string) {
+    const task = await this.taskRepository.findOneByOrFail({ id: taskId });
+    return task;
+  }
+
+  private handleDBExceptions(error: any): never {
+    if (error.code === '23505') {
+      this.logger.error(error);
+      throw new BadRequestException(
+        `Title "${error.parameters[0]}" already exists.`,
+      );
+    }
+
+    if (error instanceof EntityNotFoundError) {
+      this.logger.error(error);
+      throw new NotFoundException(
+        `Task with id ${error.criteria.id} not found`,
+      );
+    }
+
+    if (error.code === 'ECONNREFUSED') {
+      this.logger.error((error.message = 'DB connection refused'));
+      throw new InternalServerErrorException();
+    }
+
+    throw new InternalServerErrorException();
   }
 }
