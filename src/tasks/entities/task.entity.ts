@@ -62,6 +62,13 @@ export class TaskEntity {
   })
   categoryId: string;
 
+  @Column({
+    type: 'text',
+    array: true,
+    default: [],
+  })
+  tags: string[];
+
   @CreateDateColumn()
   createdAt: Date;
 
