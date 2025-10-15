@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsDateString,
   IsEnum,
   IsOptional,
@@ -34,4 +35,8 @@ export class CreateTaskDto {
 
   @IsUUID('4')
   readonly categoryId: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly tags: string[];
 }
