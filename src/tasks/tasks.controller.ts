@@ -25,6 +25,14 @@ export class TasksController {
     return await this.tasksService.getAll(pagination);
   }
 
+  @Get('tag/:tag')
+  async getTasksByTag(
+    @Param('tag') tag: string,
+    @Query() pagination: PaginationDto,
+  ) {
+    return await this.tasksService.getByTag(tag, pagination);
+  }
+
   @Get(':id')
   async getTasksById(@Param('id', ParseUuidV4Pipe) id: string) {
     return await this.tasksService.getById(id);
