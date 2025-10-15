@@ -93,12 +93,16 @@ export class TasksService {
   private handleDBExceptions(error: any): never {
     if (error.code === '23505') {
       this.logger.error(error);
-      throw new BadRequestException(error.detail);
+      throw new BadRequestException(
+        `Title "${error.parameters[0]}" already exists.`,
+      );
     }
 
     if (error instanceof EntityNotFoundError) {
       this.logger.error(error);
-      throw new NotFoundException('Task not found');
+      throw new NotFoundException(
+        `Task with id ${error.criteria.id} not found`,
+      );
     }
 
     if (error.code === 'ECONNREFUSED') {
