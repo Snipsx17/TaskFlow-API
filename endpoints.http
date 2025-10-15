@@ -4,7 +4,10 @@
 GET {{base_url}}/tasks?ordeR=Asc&limit=10
 
 ###
-GET {{base_url}}/tasks/c3c33a31-b26c-44aa-b9bd-549390d962cb
+GET {{base_url}}/tasks/62a98a7b-c0d1-46fd-a25d-6d781a7ff079
+
+###
+GET {{base_url}}/tasks/tag/standpro?limit=2&order=desc
 
 ###
 DELETE {{base_url}}/tasks/c3c33a31-b26c-44aa-b9bd-549390d962cb
@@ -14,13 +17,14 @@ POST {{base_url}}/tasks
 Content-Type: application/json
 
 {
-    "title": "Actualizar dependencias",
+    "title": "correr 30 min",
     "description": "Run 30 minutes each day",
     "status": "pending",
     "priority": "high",
     "dueDate": "2025-10-15",
     "userId": "e0e8b0df-a51c-49b5-a717-d2e1f0487941",
-    "categoryId": "cb23e478-fd3c-4032-a47b-d80d71ab8e27"
+    "categoryId": "cb23e478-fd3c-4032-a47b-d80d71ab8e27",
+    "tags": ["common"]
 }
 
 ###
@@ -34,7 +38,8 @@ Content-Type: application/json
     "priority": "medium",
     "dueDate": "2025-10-17",
     "userId": "9398271d-14f1-457d-afcc-ffb0212addb5",
-    "categoryId": "fc33e808-9371-416f-9044-df32e97a831e"
+    "categoryId": "fc33e808-9371-416f-9044-df32e97a831e",
+    "tags": []
 }
 
 ###
@@ -50,10 +55,9 @@ Content-Type: application/json
 }
 
 ###
-PUT {{base_url}}/tasks/c3c33a31-b26c-44aa-b9bd-549390d962cb
+PUT {{base_url}}/tasks/a02583e9-24ed-4144-81f5-b88b7677c1e3
 Content-Type: application/json
 
 {
-
-    "dueDate": "2026-01-01"
+    "tags": ["standpro", "dev"]
 }

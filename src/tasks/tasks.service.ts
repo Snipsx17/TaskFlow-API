@@ -22,7 +22,7 @@ export class TasksService {
   ) {}
 
   async getAll(pagination: PaginationDto) {
-    const { limit = 10, offset = 0, order = 'ASC' } = pagination;
+    const { limit = 1000, offset = 0, order = 'ASC' } = pagination;
 
     try {
       // method 1 without query builder
@@ -51,6 +51,23 @@ export class TasksService {
       const task = await this.getTaskFromDB(taskId);
 
       return task;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async getByTag(tag: string, pagination: PaginationDto) {
+    const { limit = 1000, offset = 0, order = 'ASC' } = pagination;
+    try {
+      const query = this.taskRepository.createQueryBuilder('task');
+      const tasks = await query
+        .where(':tag = ANY(task.tags)', { tag })
+        .orderBy('title', order as 'ASC' | 'DESC')
+        .limit(limit)
+        .offset(offset)
+        .getMany();
+
+      return tasks;
     } catch (error) {
       this.handleDBExceptions(error);
     }
@@ -109,6 +126,7 @@ export class TasksService {
       this.logger.error((error.message = 'DB connection refused'));
       throw new InternalServerErrorException();
     }
+    console.log(error);
 
     throw new InternalServerErrorException();
   }
