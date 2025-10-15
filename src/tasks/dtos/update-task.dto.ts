@@ -18,21 +18,21 @@ export class UpdateTaskDto {
   @IsString()
   @Length(3, 255)
   @IsOptional()
-  readonly description: string;
+  readonly description?: string;
 
   @IsEnum(TaskStatus)
   @IsOptional()
-  readonly status: TaskStatus;
+  readonly status?: TaskStatus;
 
   @IsEnum(TaskPriority)
   @IsOptional()
-  readonly priority: TaskPriority;
+  readonly priority?: TaskPriority;
 
   @IsDateString()
   @IsOptional()
-  readonly dueDate: Date;
+  readonly dueDate?: Date;
 
   @IsUUID('4')
   @IsOptional()
-  readonly categoryId: string;
+  readonly categoryId?: string;
 }
