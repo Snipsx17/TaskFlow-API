@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/Config';
 import { TasksModule } from './tasks/tasks.module';
 import { CommonModule } from './common/common.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],
