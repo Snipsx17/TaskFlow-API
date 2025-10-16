@@ -1,5 +1,6 @@
 @base_url = http://localhost:3000
 
+################### TASKS ###########################
 ###
 GET {{base_url}}/tasks?ordeR=Asc&limit=10
 
@@ -60,4 +61,28 @@ Content-Type: application/json
 
 {
     "tags": ["standpro", "dev"]
+}
+
+
+################### CATEGORIES ###########################
+
+POST {{base_url}}/categories
+Content-Type: application/json
+
+{
+    "name": "programacion"
+}
+
+###
+GET {{base_url}}/categories?ordeR=Asc&limit=10
+
+###
+GET {{base_url}}/categories/73826c6d-2eba-4ddd-a854-08eabdaabaea
+
+###
+PUT {{base_url}}/categories/1360b4ce-bbb6-4f19-94dd-94a77a4662c9
+Content-Type: application/json
+
+{
+    "name": "programacion de base de datos"
 }
