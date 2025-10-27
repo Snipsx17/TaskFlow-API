@@ -1,7 +1,9 @@
+import { TaskEntity } from 'src/tasks/entities/task.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -24,4 +26,7 @@ export class CategoryEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => TaskEntity, (task) => task.category)
+  tasks: TaskEntity[];
 }
