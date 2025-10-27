@@ -75,7 +75,9 @@ export class TasksService {
 
   async create(createTaskDto: CreateTaskDto) {
     try {
-      const newTask = this.taskRepository.create(createTaskDto);
+      const newTask = this.taskRepository.create(
+        this.transformDtoToEntity(createTaskDto),
+      );
       await this.taskRepository.save(newTask);
       return newTask;
     } catch (error) {
@@ -86,7 +88,10 @@ export class TasksService {
   async update(taskId: string, updatedTaskDto: UpdateTaskDto) {
     try {
       await this.getTaskFromDB(taskId);
-      await this.taskRepository.update(taskId, updatedTaskDto);
+      await this.taskRepository.update(
+        taskId,
+        this.transformDtoToEntity(updatedTaskDto),
+      );
       return this.taskRepository.findBy({ id: taskId });
     } catch (error) {
       this.handleDBExceptions(error);
@@ -107,11 +112,25 @@ export class TasksService {
     return task;
   }
 
+  private transformDtoToEntity(dto: CreateTaskDto | UpdateTaskDto) {
+    return {
+      ...dto,
+      ...(dto.category && { category: { id: dto.category } }),
+    };
+  }
+
   private handleDBExceptions(error: any): never {
     if (error.code === '23505') {
       this.logger.error(error);
       throw new BadRequestException(
         `Title "${error.parameters[0]}" already exists.`,
+      );
+    }
+
+    if (error.code === '23503') {
+      this.logger.error(error);
+      throw new BadRequestException(
+        `Category with ID "${error.parameters[7]}" not exists.`,
       );
     }
 
