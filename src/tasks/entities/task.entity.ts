@@ -61,6 +61,7 @@ export class TaskEntity {
 
   @ManyToOne(() => CategoryEntity, (category) => category.tasks, {
     eager: true,
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'category' })
   category: CategoryEntity;

@@ -46,7 +46,7 @@ export class CategoriesController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+  remove(@Param('id', ParseUuidV4Pipe) id: string) {
+    return this.categoriesService.remove(id);
   }
 }
