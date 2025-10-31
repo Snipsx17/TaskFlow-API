@@ -99,7 +99,9 @@ export class TasksService {
         taskId,
         this.transformDtoToEntity(updatedTaskDto),
       );
-      return this.taskRepository.findBy({ id: taskId });
+      const task = await this.getTaskFromDB(taskId);
+
+      return task;
     } catch (error) {
       this.handleDBExceptions(error);
     }
