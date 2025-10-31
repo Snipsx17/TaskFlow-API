@@ -34,6 +34,7 @@ export class CreateTaskDto {
   readonly userId: string;
 
   @IsUUID('4')
+  @IsOptional()
   readonly category: string;
 
   @IsArray()
