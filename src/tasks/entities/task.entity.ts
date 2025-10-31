@@ -59,7 +59,9 @@ export class TaskEntity {
   })
   userId: string;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.tasks)
+  @ManyToOne(() => CategoryEntity, (category) => category.tasks, {
+    eager: true,
+  })
   @JoinColumn({ name: 'category' })
   category: CategoryEntity;
 

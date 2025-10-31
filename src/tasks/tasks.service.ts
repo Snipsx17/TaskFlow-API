@@ -35,12 +35,18 @@ export class TasksService {
       // });
 
       //method 2 with query builder
-      const query = this.taskRepository.createQueryBuilder();
-      return await query
+      const query = this.taskRepository.createQueryBuilder('task');
+      const tasks = await query
         .orderBy('title', order as 'ASC' | 'DESC')
         .limit(limit)
         .offset(offset)
+        .leftJoinAndSelect('task.category', 'taskCategory')
         .getMany();
+
+      return tasks.map(({ category, ...task }) => ({
+        ...task,
+        category: category?.id ?? null,
+      }));
     } catch (error) {
       this.handleDBExceptions(error);
     }
@@ -65,6 +71,7 @@ export class TasksService {
         .orderBy('title', order as 'ASC' | 'DESC')
         .limit(limit)
         .offset(offset)
+        .leftJoinAndSelect('task.category', 'taskCategory')
         .getMany();
 
       return tasks;
@@ -108,8 +115,10 @@ export class TasksService {
   }
 
   async getTaskFromDB(taskId: string) {
-    const task = await this.taskRepository.findOneByOrFail({ id: taskId });
-    return task;
+    const task = await this.taskRepository.findOneByOrFail({
+      id: taskId,
+    });
+    return { ...task, category: task.category?.id ?? null };
   }
 
   private transformDtoToEntity(dto: CreateTaskDto | UpdateTaskDto) {
