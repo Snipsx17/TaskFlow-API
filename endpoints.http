@@ -2,10 +2,10 @@
 
 ################### TASKS ###########################
 ###
-GET {{base_url}}/tasks?ordeR=Asc&limit=10
+GET {{base_url}}/tasks?order=asc
 
 ###
-GET {{base_url}}/tasks/62a98a7b-c0d1-46fd-a25d-6d781a7ff079
+GET {{base_url}}/tasks/e7605f37-32e6-4add-8b73-1aa1a61ab5eb
 
 ###
 GET {{base_url}}/tasks/tag/standpro?limit=2&order=desc
@@ -18,13 +18,13 @@ POST {{base_url}}/tasks
 Content-Type: application/json
 
 {
-    "title": "correr 30 min",
+    "title": "estudiar aws 2 hora",
     "description": "Run 30 minutes each day",
     "status": "pending",
     "priority": "high",
     "dueDate": "2025-10-15",
     "userId": "e0e8b0df-a51c-49b5-a717-d2e1f0487941",
-    "categoryId": "cb23e478-fd3c-4032-a47b-d80d71ab8e27",
+    "category": null,
     "tags": ["common"]
 }
 
@@ -39,7 +39,7 @@ Content-Type: application/json
     "priority": "medium",
     "dueDate": "2025-10-17",
     "userId": "9398271d-14f1-457d-afcc-ffb0212addb5",
-    "categoryId": "fc33e808-9371-416f-9044-df32e97a831e",
+    "category": "fc33e808-9371-416f-9044-df32e97a831e",
     "tags": []
 }
 
@@ -56,11 +56,11 @@ Content-Type: application/json
 }
 
 ###
-PUT {{base_url}}/tasks/a02583e9-24ed-4144-81f5-b88b7677c1e3
+PUT {{base_url}}/tasks/2e5cfd9b-33c4-43fe-8a84-d18cbd2bd7aa
 Content-Type: application/json
 
 {
-    "tags": ["standpro", "dev"]
+    "category": "a99fd2b5-6e29-4fa8-84b6-cf7b9c357d01"
 }
 
 
@@ -70,19 +70,22 @@ POST {{base_url}}/categories
 Content-Type: application/json
 
 {
-    "name": "programacion"
+    "name": "heath"
 }
 
 ###
 GET {{base_url}}/categories?ordeR=Asc&limit=10
 
 ###
-GET {{base_url}}/categories/73826c6d-2eba-4ddd-a854-08eabdaabaea
+GET {{base_url}}/categories/5dc79a4d-b807-4f79-89e0-dcd8e827f58f
 
 ###
-PUT {{base_url}}/categories/1360b4ce-bbb6-4f19-94dd-94a77a4662c9
+PUT {{base_url}}/categories/5dc79a4d-b807-4f79-89e0-dcd8e827f58f
 Content-Type: application/json
 
 {
-    "name": "programacion de base de datos"
+    "name": "salud"
 }
+
+###
+DELETE {{base_url}}/categories/5dc79a4d-b807-4f79-89e0-dcd8e827f58f

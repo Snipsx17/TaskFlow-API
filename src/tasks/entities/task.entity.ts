@@ -4,9 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { CategoryEntity } from 'src/categories/entities/category.entity';
 
 @Entity('task')
 export class TaskEntity {
@@ -56,11 +59,12 @@ export class TaskEntity {
   })
   userId: string;
 
-  @Column({
-    type: 'uuid',
-    nullable: false,
+  @ManyToOne(() => CategoryEntity, (category) => category.tasks, {
+    eager: true,
+    onDelete: 'SET NULL',
   })
-  categoryId: string;
+  @JoinColumn({ name: 'category' })
+  category: CategoryEntity;
 
   @Column({
     type: 'text',
